@@ -26,6 +26,11 @@ void read_config(FILE *config_file) {
 
 	fgets(str, 256, config_file);
 	while (!feof(config_file)) {
+		if (strlen(str) < 3) {
+			fgets(str, 256, config_file);
+			continue;
+		}
+
 		option_name = strtok(str, DELIM);
 		option_value = strtok(NULL, DELIM);
 
