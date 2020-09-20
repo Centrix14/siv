@@ -5,5 +5,6 @@ void sev_init_parametrs();
 void sev_print_parametrs();
 char *siv_get_config_file_name();
 int siv_is_option_true(char *name);
+void siv_set_zoom_index(int *var);
 
 #endif
