@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 	GtkWidget *scroll_window = NULL;
 
 	GtkWidget *next_bttn = NULL, *prev_bttn = NULL, *zoom_inc_bttn = NULL,
-			  *zoom_dec_bttn = NULL;
+			  *zoom_dec_bttn = NULL, *shell_bttn = NULL, *rotate_bttn = NULL;
 	char *image_name = "none";
 
 	// init parametrs and open config
@@ -68,11 +68,13 @@ int main(int argc, char *argv[]) {
 	prev_bttn = gtk_button_new_with_label("<");
 	zoom_inc_bttn = gtk_button_new_with_label("+");
 	zoom_dec_bttn = gtk_button_new_with_label("-");
+	shell_bttn = gtk_button_new_with_label("/");
 
 	g_signal_connect(G_OBJECT(zoom_inc_bttn), "clicked", G_CALLBACK(zoom_inc_bttn_click), NULL);
 	g_signal_connect(G_OBJECT(zoom_dec_bttn), "clicked", G_CALLBACK(zoom_dec_bttn_click), NULL);
 	g_signal_connect(G_OBJECT(next_bttn), "clicked", G_CALLBACK(next_bttn_click), window);
 	g_signal_connect(G_OBJECT(prev_bttn), "clicked", G_CALLBACK(prev_bttn_click), window);
+	g_signal_connect(G_OBJECT(shell_bttn), "clicked", G_CALLBACK(shell_bttn_click), window);
 
 	// init button panels
 	bttn_panel_left = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -90,6 +92,8 @@ int main(int argc, char *argv[]) {
 		gtk_box_pack_start(GTK_BOX(bttn_panel_right), zoom_inc_bttn, FALSE, FALSE, 5);
 	if (siv_is_option_true("next-button"))
 		gtk_box_pack_start(GTK_BOX(bttn_panel_right), next_bttn, TRUE, TRUE, 5);
+	if (siv_is_option_true("shell-button"))
+		gtk_box_pack_start(GTK_BOX(bttn_panel_left), shell_bttn, FALSE, FALSE, 5);	
 
 	// init main_box
 	main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -190,6 +194,42 @@ void prev_bttn_click(GtkWidget *bttn, GtkWidget *window) {
 	gtk_window_set_title(GTK_WINDOW(window), entry->d_name);
 }
 
+void shell_bttn_click(GtkWidget *bttn, GtkWidget *parent) {
+	GtkWidget *dialog = NULL, *content = NULL;
+	GtkWidget *main_box = NULL, *send_box = NULL;
+	GtkWidget *info_label = NULL, *command_entry = NULL, *send_bttn = NULL;
+
+	// init dialog
+	dialog = gtk_dialog_new_with_buttons("shell", GTK_WINDOW(parent), (GtkDialogFlags)NULL, NULL, GTK_RESPONSE_NONE, NULL);
+	content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
+	g_signal_connect_swapped(dialog, "response", G_CALLBACK(gtk_widget_destroy), dialog);
+
+	// init widgets
+	info_label = gtk_label_new("Enter the command to process the file");
+	command_entry = gtk_entry_new();
+	send_bttn = gtk_button_new_with_label("send");
+
+	// add signal to send_bttn
+	g_signal_connect(G_OBJECT(send_bttn), "clicked", G_CALLBACK(send_bttn_click), command_entry);
+
+	// set target window
+	set_window(parent);
+
+	// init & pack send box
+	send_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_box_pack_start(GTK_BOX(send_box), command_entry, TRUE, TRUE, 5);
+	gtk_box_pack_start(GTK_BOX(send_box), send_bttn, FALSE, FALSE, 5);
+
+	// init & pack main box
+	main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(main_box), info_label, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(main_box), send_box, TRUE, TRUE, 5);
+
+	gtk_container_add(GTK_CONTAINER(content), main_box);
+	gtk_widget_show_all(dialog);
+}
+
 void key_press(GtkWidget *window, GdkEventKey *event, gpointer data) {
 	switch (event->keyval) {
 		case GDK_KEY_Left:
@@ -210,6 +250,10 @@ void key_press(GtkWidget *window, GdkEventKey *event, gpointer data) {
 
 		case GDK_KEY_Escape:
 			gtk_main_quit();
+		break;
+
+		case GDK_KEY_slash:
+			shell_bttn_click(NULL, window);
 		break;
 	}
 }
