@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
 	// init parametrs and open config
 	sev_init_parametrs();
-	open_config("c");
+	open_config(siv_get_config_file_name());
 	 
 	// open current directory
 	dir = opendir(get_option_by_name("pwd"));	
@@ -82,13 +82,17 @@ int main(int argc, char *argv[]) {
 	gtk_container_add(GTK_CONTAINER(scroll_window), image);
 
 	// pack button panels
-	gtk_box_pack_start(GTK_BOX(bttn_panel_left), zoom_dec_bttn, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(bttn_panel_left), prev_bttn, TRUE, TRUE, 5);
-	gtk_box_pack_start(GTK_BOX(bttn_panel_right), zoom_inc_bttn, FALSE, FALSE, 5);
-	gtk_box_pack_start(GTK_BOX(bttn_panel_right), next_bttn, TRUE, TRUE, 5);
+	if (siv_is_option_true("zoom--button"))
+		gtk_box_pack_start(GTK_BOX(bttn_panel_left), zoom_dec_bttn, FALSE, FALSE, 5);
+	if (siv_is_option_true("prev-button"))
+		gtk_box_pack_start(GTK_BOX(bttn_panel_left), prev_bttn, TRUE, TRUE, 5);
+	if (siv_is_option_true("zoom+-button"))
+		gtk_box_pack_start(GTK_BOX(bttn_panel_right), zoom_inc_bttn, FALSE, FALSE, 5);
+	if (siv_is_option_true("next-button"))
+		gtk_box_pack_start(GTK_BOX(bttn_panel_right), next_bttn, TRUE, TRUE, 5);
 
 	// init main_box
-	main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+	main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 	// pack main box
 	gtk_box_pack_start(GTK_BOX(main_box), bttn_panel_left, FALSE, FALSE, 0);
