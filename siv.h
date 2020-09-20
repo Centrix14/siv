@@ -6,4 +6,6 @@ void zoom_dec_bttn_click(GtkWidget *bttn, gpointer data);
 void next_bttn_click(GtkWidget *bttn, GtkWidget *window);
 void prev_bttn_click(GtkWidget *bttn, GtkWidget *window);
 
+void key_press(GtkWidget *window, GdkEventKey *event, gpointer data);
+
 #endif
