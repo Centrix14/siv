@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
 	GtkWidget *next_bttn = NULL, *prev_bttn = NULL, *zoom_inc_bttn = NULL,
 			  *zoom_dec_bttn = NULL;
-	char *image_name = NULL;
+	char *image_name = "none";
 
 	// init parametrs and open config
 	sev_init_parametrs();
@@ -45,7 +45,11 @@ int main(int argc, char *argv[]) {
 	gtk_window_set_title(GTK_WINDOW(window), "siv");
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
 	//gtk_window_set_default_icon_from_file("gbl.ico", NULL);
+	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK);
+
+	// add signals to window
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event", G_CALLBACK(key_press), NULL);
 
 	// init scrolled window
 	scroll_window = gtk_scrolled_window_new(NULL, NULL);
@@ -180,4 +184,28 @@ void prev_bttn_click(GtkWidget *bttn, GtkWidget *window) {
 	gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixel_buffer);
 
 	gtk_window_set_title(GTK_WINDOW(window), entry->d_name);
+}
+
+void key_press(GtkWidget *window, GdkEventKey *event, gpointer data) {
+	switch (event->keyval) {
+		case GDK_KEY_Left:
+			prev_bttn_click(NULL, window);
+		break;
+
+		case GDK_KEY_Right:
+			next_bttn_click(NULL, window);
+		break;
+
+		case GDK_KEY_plus:
+			zoom_inc_bttn_click(NULL, NULL);
+		break;
+
+		case GDK_KEY_minus:
+			zoom_dec_bttn_click(NULL, NULL);
+		break;
+
+		case GDK_KEY_Escape:
+			gtk_main_quit();
+		break;
+	}
 }
