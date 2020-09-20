@@ -10,8 +10,8 @@
 	#define DELIM "/"
 #endif
 
-char *options[] = {"prev-button", "next-button", "zoom+-button", "zoom--button", NULL};
-char *default_vals[] = {"t", "t", "t", "t"};
+char *options[] = {"prev-button", "next-button", "zoom+-button", "zoom--button", "shell-button", NULL};
+char *default_vals[] = {"t", "t", "t", "t", "t"};
 
 char file[256] = "";
 
