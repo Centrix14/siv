@@ -10,8 +10,8 @@
 	#define DELIM "/"
 #endif
 
-char *options[] = {"prev-button", "next-button", "zoom+-button", "zoom--button", "shell-button", NULL};
-char *default_vals[] = {"t", "t", "t", "t", "t"};
+char *options[] = {"prev-button", "next-button", "zoom+-button", "zoom--button", "shell-button", "zoom-index", NULL};
+char *default_vals[] = {"t", "t", "t", "t", "t", "10"};
 
 char file[256] = "";
 
@@ -42,4 +42,8 @@ int siv_is_option_true(char *name) {
 	if (!strcmp(option, "t"))
 		return 1;
 	return 0;
+}
+
+void siv_set_zoom_index(int *var) {
+	*var = atoi(get_option_by_name("zoom-index"));
 }
