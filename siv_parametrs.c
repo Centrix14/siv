@@ -4,8 +4,16 @@
 
 #include "config.h"
 
-char *options[] = {"left-button", "right-button", "inc-button", "dec-button", NULL};
+#ifdef WIN32
+	#define DELIM "\\"
+#else
+	#define DELIM "/"
+#endif
+
+char *options[] = {"prev-button", "next-button", "zoom+-button", "zoom--button", NULL};
 char *default_vals[] = {"t", "t", "t", "t"};
+
+char file[256] = "";
 
 void add_pwd_param() {
 	add_option("pwd", getenv("PWD"));
@@ -22,3 +30,16 @@ void sev_print_parametrs() {
 		puts(get_option_by_index(i));
 }
 
+char *siv_get_config_file_name() {
+	sprintf(file, "%s%s.sivrc", getenv("HOME"), DELIM);	
+
+	return file;
+}
+
+int siv_is_option_true(char *name) {
+	char *option = get_option_by_name(name);
+
+	if (!strcmp(option, "t"))
+		return 1;
+	return 0;
+}
