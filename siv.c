@@ -24,12 +24,13 @@ int main(int argc, char *argv[]) {
 	GtkWidget *scroll_window = NULL;
 
 	GtkWidget *next_bttn = NULL, *prev_bttn = NULL, *zoom_inc_bttn = NULL,
-			  *zoom_dec_bttn = NULL, *shell_bttn = NULL, *rotate_bttn = NULL;
+			  *zoom_dec_bttn = NULL, *shell_bttn = NULL;
 	char *image_name = "none";
 
 	// init parametrs and open config
 	sev_init_parametrs();
 	open_config(siv_get_config_file_name());
+	siv_set_zoom_index(&zoom_index);
 	 
 	// open current directory
 	dir = opendir(get_option_by_name("pwd"));	
@@ -134,8 +135,10 @@ void zoom_dec_bttn_click(GtkWidget *bttn, gpointer data) {
 	w = gdk_pixbuf_get_width(pixel_buffer);
 	h = gdk_pixbuf_get_height(pixel_buffer);
 
-	w -= zoom_index;
-	h -= zoom_index;
+	if (w - zoom_index > 0 && h - zoom_index > 0) {
+		w -= zoom_index;
+		h -= zoom_index;
+	}
 
 	pixel_buffer = gdk_pixbuf_scale_simple(pixel_buffer, w, h, GDK_INTERP_BILINEAR);
 	gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixel_buffer);
